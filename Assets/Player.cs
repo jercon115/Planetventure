@@ -16,6 +16,12 @@ public class Player : MonoBehaviour {
 		body = GetComponent<Rigidbody2D> ();
 	}
 
+	void Update() {
+		// Jumping
+		if (Input.GetKeyDown (KeyCode.W))
+			body.AddForce (transform.TransformDirection (new Vector2 (0.0f, jumpForce)));
+	}
+
 	void FixedUpdate () {
 		// Gravity
 		Vector2 g = planet.Gravity (transform.localPosition);
@@ -24,10 +30,6 @@ public class Player : MonoBehaviour {
 		// Side movement
 		Vector2 moveVector = transform.TransformDirection(new Vector2 (Input.GetAxisRaw ("Horizontal") * movForce , 0.0f));
 		body.AddForce (moveVector);
-
-		// Jumping
-		if (Input.GetKeyDown (KeyCode.W))
-			body.AddForce (transform.TransformDirection (new Vector2 (0.0f, jumpForce)));
 
 		// Rotate towards gravity
 		float ang = Mathf.Atan2 (g.y, g.x) * 180 / Mathf.PI + 90;
