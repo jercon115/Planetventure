@@ -10,16 +10,22 @@ public class Player : MonoBehaviour {
 	public float jumpForce;
 
 	private Rigidbody2D body;
+	private Collider2D collider2d;
 
 	// Use this for initialization
 	void Start () {
 		body = GetComponent<Rigidbody2D> ();
+		collider2d = GetComponent<Collider2D> ();
 	}
 
 	void Update() {
-		// Jumping
-		if (Input.GetKeyDown (KeyCode.W))
-			body.AddForce (transform.TransformDirection (new Vector2 (0.0f, jumpForce)));
+		// Check if touching planet
+		Collider2D planetCollider = planet.GetComponent<Collider2D> ();
+		if (collider2d.IsTouching (planetCollider)) {
+			// Jumping
+			if (Input.GetKeyDown (KeyCode.W))
+				body.AddForce (transform.TransformDirection (new Vector2 (0.0f, jumpForce)));
+		}
 	}
 
 	void FixedUpdate () {
