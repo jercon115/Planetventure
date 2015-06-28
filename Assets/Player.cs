@@ -3,14 +3,15 @@ using System.Collections;
 
 public class Player : MonoBehaviour {
 
-	public Planet planet;
-
 	public float gravForce;
 	public float movForce;
 	public float jumpForce;
+	public int doubleJumpMax;
 
 	private Rigidbody2D body;
 	private BoxCollider2D boxcollider;
+	
+	private int doubleJump;
 
 	// Use this for initialization
 	void Start () {
@@ -19,18 +20,30 @@ public class Player : MonoBehaviour {
 	}
 
 	void Update() {
-		// Check if touching planet
-		Collider2D planetCollider = planet.GetComponent<Collider2D> ();
+		// Check if feet on surface
 		if (boxcollider.IsTouchingLayers (1)) {
+			doubleJump = doubleJumpMax;
+
 			// Jumping
 			if (Input.GetKeyDown (KeyCode.W))
 				body.AddForce (transform.TransformDirection (new Vector2 (0.0f, jumpForce)));
+		} else {
+			// Double jumping
+			if (Input.GetKeyDown (KeyCode.W) && doubleJump > 0) {
+				body.AddForce (transform.TransformDirection (new Vector2 (0.0f, jumpForce)));
+				doubleJump -= 1;
+			}
 		}
 	}
 
 	void FixedUpdate () {
-		// Gravity
-		Vector2 g = planet.Gravity (transform.localPosition);
+		Planet[] planets = UnityEngine.Object.FindObjectsOfType<Planet>() ;
+		Vector2 g = new Vector2 (Mathf.Infinity, Mathf.Infinity);
+		foreach (Planet planet in planets) {
+			// Gravity
+			Vector2 newg = planet.Gravity (transform.localPosition);
+			if (newg.magnitude < g.magnitude) g = newg;
+		}
 		body.AddForce (g.normalized * gravForce);
 
 		// Side movement
