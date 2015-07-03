@@ -52,7 +52,7 @@ public class Player : MonoBehaviour {
 
 		// Rotate towards gravity
 		float ang = Mathf.Atan2 (g.y, g.x) * 180 / Mathf.PI + 90;
-		body.MoveRotation (ang);
-
+		var targetRotation = Quaternion.AngleAxis (ang, new Vector3 (0.0f, 0.0f, 1.0f));
+		transform.rotation = Quaternion.Slerp (transform.rotation, targetRotation, Time.deltaTime * 10.0f);
 	}
 }
