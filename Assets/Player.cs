@@ -51,8 +51,9 @@ public class Player : MonoBehaviour {
 		body.AddForce (moveVector);
 
 		// Rotate towards gravity
-		float ang = Mathf.Atan2 (g.y, g.x) * 180 / Mathf.PI + 90;
-		var targetRotation = Quaternion.AngleAxis (ang, new Vector3 (0.0f, 0.0f, 1.0f));
-		transform.rotation = Quaternion.Slerp (transform.rotation, targetRotation, Time.deltaTime * 10.0f);
+		float targetAng = Mathf.Atan2 (g.y, g.x) * 180 / Mathf.PI + 90;
+		float currentAng = body.transform.localEulerAngles.z;
+		float newAng = currentAng + Mathf.DeltaAngle (currentAng, targetAng) * 0.1f;
+		body.MoveRotation (newAng);
 	}
 }
